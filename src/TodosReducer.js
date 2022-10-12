@@ -1,12 +1,13 @@
 import YapilacakIs from "./YapilacakIs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState,useReducer } from "react";
 //import ilkYapilacaklarObjesi from "./data/yapilacaklarData";
+import reducerYapilacaklar from './reducers/reducerYapilacaklar'
 
 
 
-function Todos(){
-  //const [yapilacaklar, dispatch] = useReducer(reducer, ilkYapilacaklarObjesi);
-  const [yapilacaklar, yapilacaklarGuncelle] = useState([]);//usestate ile yapılsaydı böyle olacaktı.
+function TodosReducer(){
+  const [yapilacaklar, dispatchYapilacaklar] = useReducer(reducerYapilacaklar, []);
+  //const [yapilacaklar, yapilacaklarGuncelle] = useState([]);//usestate ile yapılsaydı böyle olacaktı.
 
   const iptalInput=useRef(null);
   const ekleInput=useRef(null);
@@ -16,50 +17,31 @@ function Todos(){
     const yapilacaklarVerisiAl=async()=>{
       const resp= await fetch("yapilacaklarData.json");
       const ilkYapilacaklarObjesi= await resp.json();
-      yapilacaklarGuncelle(ilkYapilacaklarObjesi);
+      dispatchYapilacaklar({ad:"ILKVERILER", data:ilkYapilacaklarObjesi});
     }
     yapilacaklarVerisiAl();
-  },[yapilacaklarGuncelle])
+  },[dispatchYapilacaklar])
 
   function tamamlandiYap(guncellenecekIs){ 
-    const yeniListe= yapilacaklar.map((yapilacakIs) => {
-      if (yapilacakIs.id === guncellenecekIs.id) {
-        return { ...yapilacakIs, complete: true };
-      } else {
-        return yapilacakIs;
-      }
-    });
-    yapilacaklarGuncelle(yeniListe);
+    dispatchYapilacaklar({ad:"TAMAMLANDI", id:guncellenecekIs.id});
   }
 
   function iptalEt(){
     const iptalDegeri=parseInt(iptalInput.current.value);
     
-    if(!yapilacaklar.some((eleman)=>{
-      return eleman.id===iptalDegeri;
-    } )){
-      alert("İş bulunamadı")
 
-      return;
-    }
-    
-    
-    const yeniListe= yapilacaklar.map((yapilacakIs) => {
-      if (yapilacakIs.id ===iptalDegeri) {
-        return { ...yapilacakIs, complete: false };
-      } else{
-        return yapilacakIs;
-      }
-    });
-    yapilacaklarGuncelle(yeniListe);
+    //yapilacaklarGuncelle(yeniListe);
+    dispatchYapilacaklar({ad:"IPTALET", iptalId:iptalDegeri});
   }
 
   function yeniEkle(){
     const yeniTitle=ekleInput.current.value;
     const yeniId=parseInt(idInput.current.value);
-    const yeniIs={id:yeniId, title:yeniTitle,complete:false}
-    const yeniListe=[...yapilacaklar, yeniIs];
-    yapilacaklarGuncelle(  yeniListe );
+
+
+    //yapilacaklarGuncelle(  yeniListe );
+
+    dispatchYapilacaklar({ad:"YENIEKLE", title:yeniTitle, id:yeniId});
   }
 
   if (yapilacaklar.length<1)
@@ -90,5 +72,5 @@ function Todos(){
   )
 }
 
-export default Todos;
+export default TodosReducer;
 

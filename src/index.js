@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import Todos from './Todos';
+import TodosReducer from './TodosReducer';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
      <App />
-     <Todos />
+     <TodosReducer />
   </>
  
   
