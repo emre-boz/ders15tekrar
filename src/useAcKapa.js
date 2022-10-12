@@ -11,7 +11,7 @@ const useAcKapa = (ilkDurum=false) => {
       state,
       {
         ac: handleTrue,
-        kapa: handleFalse,
+        kapat: handleFalse,
         acKapa: handleToggle,
       },
     ];
